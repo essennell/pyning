@@ -136,3 +136,16 @@ def test_resolved_registry_is_a_dictionary():
 
 if __name__ == '__main__':
     pytest.main()
+
+    import json
+
+    args = { 'url': '${remotes.endpoint}' }
+    overrides = json.loads( '''
+        { "remotes": {
+            "endpoint": "http://nowhere"
+        } } '''
+                            )
+
+    cfg = Registry().add( args ).add( overrides ).resolve()
+    print( cfg[ 'url' ] )
+
