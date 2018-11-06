@@ -1,6 +1,8 @@
 # Pyning
 ## A quick and extensible configuration management library
 
+https://test.pypi.org/project/pyning/
+
 Pyning lets you take configuration entries in key/value pairs, 
 and query by key. For example, you might just use a dict (or any 
 Mapping type):
@@ -17,25 +19,27 @@ print( config[ 'stop-on-error' ] )
 Multiple levels of handler are possible, with later handlers 
 override same-key settings in earlier handlers. 
 
-```python
-args = { 'stop-on-error': True }
-overrides = { 'stop-on-error': False }
-registry = pyning.config.Registry()
-config = registry.add( args ).add( overrides ).resolve()
-
-print( config[ 'stop-on-error' ] )
-# False
-```
+ ```python
+ args = { 'stop-on-error': True }
+ overrides = { 'stop-on-error': False }
+ registry = pyning.config.Registry()
+ config = registry.add( args ).add( overrides ).resolve()
+ 
+ print( config[ 'stop-on-error' ] )
+ # False
+ ```
 
 You might use this to have some configuration in a file, and
 override with the argparse.ArgumentParser values.
 
 ```python
 args = { 'stop-on-error': True }
-parser = ArgumentParser().add_argument( '--stop-on-error' )
+parser = argparse.ArgumentParser()
+parser.add_argument( '--stop-on-error' ) 
+
 cmdline = parser.parse_args()
 registry = pyning.config.Registry()
-config = registry.add( args ).add( vars( cmdline ).resolve()
+config = registry.add( args ).add( vars( cmdline ) ).resolve()
 
 print( config[ 'stop-on-error' ] )
 # False
@@ -54,6 +58,11 @@ config = registry.add( args ).add( overrides ).resolve()
 print( config[ 'password' ] )
 # a good strong password
 ```
+
+The syntax used to match a variable substitution can be changed by
+passing in a different regular expression pattern to the Registry
+constructor. The default is '${variable name}', matched against
+`r'(\$\{(.*?)\})'`
 
 Values don't have to be single items: they can be sequences or
 even nested Mapping objects. A convenient short-hand can be used

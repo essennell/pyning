@@ -3,6 +3,19 @@ import re
 
 
 class CombinationDict( UserDict ):
+    """ A Mapping object with convenient shorthand for references nested keys
+
+        Behaves almost identically to a dictionary, with the added convenience
+        that nested dictionary keys can be referenced in a single string key,
+        with nesting level specified by the separator char.
+        e.g., with d = CombinationDict( '.', { ... } ), you can reference keys
+        like this:
+
+         dict[ 'a' ][ 'b' ][ 'c' ]  => dict[ 'a.b.c' ]
+
+        You can also escape the separator (it's matched against a regex, so
+        escaping is with the back-slash (r'\')) to force a key to be used literally
+    """
     def __init__( self, separator, content=None, **kwargs ):
         self.separator = separator
         self.key_pattern = re.compile( rf'(?<!\\){re.escape(self.separator)}' )

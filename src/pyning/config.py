@@ -40,15 +40,34 @@ def _resolve( marker, all_keys, src ):
 
 
 class Registry:
+    """ A settings registry for managing multiple levels of config handler.
+
+        Handlers are mapping objects, with the possibility of having
+        variable substitution. Handlers added later in a sequence of
+        additions override keys already seen.
+
+        Variable substitution can be forward or backward looking, i.e.
+        an earlier handler might reference a key in a later handler.
+
+        The marker for variable substitution can be configured, and
+        is a regex.
+    """
     def __init__( self, separator='.', marker=r'(\$\{(.*?)\})' ):
         self.handlers = []
         self.data = cdict( separator )
         self.marker_pattern = re.compile( marker )
 
     def add( self, handler ):
+        """ Add a new handler to the registry
+        :param handler: A Mapping object with new settings
+        :return: self: this is a builder method
+        """
         self.handlers.append( handler )
         self.data.update( handler )
         return self
 
     def resolve( self ):
+        """ Apply variable substitutions on all registered handlers.
+        :return: A copy of the CombinationDict Mapping object with all variable substitutions applied
+        """
         return _resolve( self.marker_pattern, self.data, self.data )
