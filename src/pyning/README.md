@@ -7,7 +7,7 @@ Mapping type):
 
 ```python
 args = { 'stop-on-error': True }
-registry = pyning.Register()
+registry = pyning.config.Registry()
 config = registry.add( args ).resolve()
 
 print( config[ 'stop-on-error' ] )
@@ -20,7 +20,7 @@ override same-key settings in earlier handlers.
 ```python
 args = { 'stop-on-error': True }
 overrides = { 'stop-on-error': False }
-registry = pyning.Register()
+registry = pyning.config.Registry()
 config = registry.add( args ).add( overrides ).resolve()
 
 print( config[ 'stop-on-error' ] )
@@ -34,7 +34,7 @@ override with the argparse.ArgumentParser values.
 args = { 'stop-on-error': True }
 parser = ArgumentParser().add_argument( '--stop-on-error' )
 cmdline = parser.parse_args()
-registry = pyning.Register()
+registry = pyning.config.Registry()
 config = registry.add( args ).add( vars( cmdline ).resolve()
 
 print( config[ 'stop-on-error' ] )
@@ -48,7 +48,7 @@ using the overrides feature. At present, it only works for strings.
 ```python
 public_args = { 'password': '${private_password}' }
 overrides = { 'private_password': 'a good strong password' }
-registry = pyning.Register()
+registry = pyning.config.Registry()
 config = registry.add( args ).add( overrides ).resolve()
 
 print( config[ 'password' ] )
