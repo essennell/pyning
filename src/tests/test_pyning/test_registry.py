@@ -126,5 +126,13 @@ def test_nest_dict_is_updated_by_added_handler():
     assert Registry().add( first ).add( second ).resolve()[ 'a.d' ] == 1000
 
 
+def test_resolved_registry_is_a_dictionary():
+    first = { 'a': { 'b': '${a.d}', 'c': '1' } }
+    second = { 'a': { 'c': '${a.b}_here', 'd': 'hello' } }
+    cfg = Registry().add( first ).add( second ).resolve()
+    assert cfg[ 'a.b' ] == 'hello'
+    assert cfg[ 'a.c' ] == 'hello_here'
+
+
 if __name__ == '__main__':
     pytest.main()
