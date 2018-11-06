@@ -1,5 +1,7 @@
 from pyning.combinationdict import CombinationDict
 
+import pytest
+
 
 def test_key_at_root_is_located():
     items = CombinationDict( '/', { 'a': 10 } )
@@ -57,7 +59,7 @@ def test_separator_for_nesting_can_be_escaped():
     items = CombinationDict( '.', { 'a': { 'b': 10 } } )
     items[ r'a\.b' ] = 100
     assert items[ 'a.b' ] == 10
-    
+
 
 if __name__ == '__main__':
-    pass
+    pytest.main()

@@ -25,6 +25,9 @@ class CombinationDict( UserDict ):
                 self[ k ] = v
         return self
 
+    def copy( self ):
+        return CombinationDict( self.separator, self.data )
+
     def __getitem__( self, key ):
         return self._locate( self.key_pattern.split( key ) )
 
