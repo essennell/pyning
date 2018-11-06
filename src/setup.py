@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='pyning',
-    version='0.1a4',
+    version='0.1a5',
     packages=[ 'pyning' ],
     url='https://github.com/essennell/pyning',
     license='MIT',

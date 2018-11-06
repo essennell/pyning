@@ -1,7 +1,7 @@
 # Pyning
 ## A quick and extensible configuration management library
 
-https://test.pypi.org/project/pyning/
+https://pypi.org/project/pyning/
 
 Pyning lets you take configuration entries in key/value pairs, 
 and query by key. For example, you might just use a dict (or any 
