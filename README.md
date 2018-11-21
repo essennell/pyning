@@ -16,16 +16,32 @@ print( config[ 'stop-on-error' ] )
 # True
 ```
 
+Keys are used as attributes on the resolved object, and can be 
+used in the usual way:
+
+```python
+args = { 'stop_on_error': True }
+registry = pyning.config.Registry()
+config = registry.add( args ).resolve()
+
+print( config.stop_on_error )
+# True
+```
+
+NB: keys with spaces, internal periods, or other python syntax
+elements (like '-') will cause this syntax to fail, but such
+keys can still be found with the dictionary-key lookup.
+
 Multiple levels of handler are possible, with later handlers 
 override same-key settings in earlier handlers. 
 
  ```python
- args = { 'stop-on-error': True }
- overrides = { 'stop-on-error': False }
+ args = { 'stop_on_error': True }
+ overrides = { 'stop_on_error': False }
  registry = pyning.config.Registry()
  config = registry.add( args ).add( overrides ).resolve()
  
- print( config[ 'stop-on-error' ] )
+ print( config.stop_on_error )
  # False
  ```
 
@@ -33,15 +49,15 @@ You might use this to have some configuration in a file, and
 override with the argparse.ArgumentParser values.
 
 ```python
-args = { 'stop-on-error': True }
+args = { 'stop_on_error': True }
 parser = argparse.ArgumentParser()
-parser.add_argument( '--stop-on-error' ) 
+parser.add_argument( '--stop_on_error' ) 
 
 cmdline = parser.parse_args()
 registry = pyning.config.Registry()
 config = registry.add( args ).add( vars( cmdline ) ).resolve()
 
-print( config[ 'stop-on-error' ] )
+print( config.stop_on_error )
 # False
 ```
 
@@ -53,9 +69,9 @@ using the overrides feature. At present, it only works for strings.
 public_args = { 'password': '${private_password}' }
 overrides = { 'private_password': 'a good strong password' }
 registry = pyning.config.Registry()
-config = registry.add( args ).add( overrides ).resolve()
+config = registry.add( public_args ).add( overrides ).resolve()
 
-print( config[ 'password' ] )
+print( config.password )
 # a good strong password
 ```
 
@@ -80,7 +96,24 @@ too.
                             )
 
     cfg = Registry().add( args ).add( overrides ).resolve()
-    print( cfg[ 'url' ] )
+    print( cfg.url )
 
 ```
 
+Also, nested mapping objects can still use a nested attribute
+lookup, too:
+
+```python
+    import json
+
+    args = { 'url': '${remotes.endpoint}' }
+    overrides = json.loads( '''
+        { "remotes": {
+            "endpoint": "http://nowhere"
+        } } '''
+                            )
+
+    cfg = Registry().add( args ).add( overrides ).resolve()
+    print( cfg.remotes.endpoint )
+
+```
