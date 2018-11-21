@@ -1,5 +1,6 @@
 .pytest_cache/
 __pycache__/
+py36/
 dist/
 build/
 src/pyning.egg-info/

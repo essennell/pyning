@@ -61,6 +61,26 @@ def test_separator_for_nesting_can_be_escaped():
     assert items[ 'a.b' ] == 10
 
 
+def test_attribute_is_found_if_set():
+    items = CombinationDict( '.', { 'a': 10 } )
+    assert items.a == 10
+
+
+def test_nested_attribute_is_found_with_same_syntax():
+    items = CombinationDict( '/', { 'a': { 'x': { 'y': 'hello' } } } )
+    assert items.a.x.y == 'hello'
+
+
+def test_attribute_name_can_contain_spaces():
+    items = CombinationDict( '.', { 'a b': 'hello' } )
+    assert items[ 'a b' ] == 'hello'
+
+
+def test_attribute_name_can_contain_other_chars():
+    items = CombinationDict( '.', { 'a_b': 'hello' } )
+    assert items.a_b == 'hello'
+
+
 if __name__ == '__main__':
     pytest.main()
 

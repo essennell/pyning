@@ -23,18 +23,23 @@ class CombinationDict( UserDict ):
         UserDict.__init__( self, content, **kwargs )
 
     def _locate( self, key ):
-        res = self.data
+        res = self
         for k in key:
-            if k not in res:
-                return None
-            res = res[ k ]
+            if k not in res.data:
+                raise IndexError
+            res = res.data[ k ]
         return res
 
     def update( *args, **kwargs ):
         self, other, *args = args
+        if not isinstance( other, Mapping ):
+            other = dict( other )
         for k, v in other.items():
             if k in self.data and isinstance( v, Mapping ):
-                self[ k ].update( v )
+                if isinstance( self[ k ], Mapping ):
+                    self[ k ].update( v )
+                else:
+                    self[ k ] = CombinationDict( self.separator, v )
             else:
                 self[ k ] = v
         return self
@@ -43,12 +48,19 @@ class CombinationDict( UserDict ):
         return CombinationDict( self.separator, self.data )
 
     def __getitem__( self, key ):
-        return self._locate( self.key_pattern.split( key ) )
+        item = self._locate( self.key_pattern.split( key ) )
+        return item
 
     def __setitem__( self, key, value ):
         key = self.key_pattern.split( key )
         res = self._locate( key[ :-1 ] )
-        res[ key[ -1 ] ] = value
+        if isinstance( value, Mapping ):
+            value = CombinationDict( self.separator, value )
+        res.data[ key[ -1 ] ] = value
+        setattr( res, key[ -1 ], value )
 
     def __contains__( self, key ):
-        return self._locate( self.key_pattern.split( key ) )
+        try:
+            return self._locate( self.key_pattern.split( key ) )
+        except IndexError:
+            return False

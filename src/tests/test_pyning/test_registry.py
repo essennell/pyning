@@ -134,6 +134,15 @@ def test_resolved_registry_is_a_dictionary():
     assert cfg[ 'a.c' ] == 'hello_here'
 
 
+def test_attribute_names_are_resolved_with_variables():
+    public_args = { 'password': '${private_password}' }
+    overrides = { 'private_password': 'a good strong password' }
+    registry = Registry()
+    config = registry.add( public_args ).add( overrides ).resolve()
+
+    assert config.password == 'a good strong password'
+
+
 if __name__ == '__main__':
     pytest.main()
 
