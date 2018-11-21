@@ -1,6 +1,6 @@
 from .combinationdict import CombinationDict as cdict
 
-from collections import Mapping
+from collections.abc import Mapping
 import re
 
 

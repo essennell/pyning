@@ -1,4 +1,5 @@
-from collections import UserDict, Mapping
+from collections import UserDict
+from collections.abc import Mapping
 import re
 
 
