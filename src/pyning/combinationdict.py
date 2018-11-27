@@ -26,9 +26,9 @@ class CombinationDict( UserDict ):
         res = self
         for k in key:
             if k not in res.data:
-                raise IndexError
+                return ( 0, None )
             res = res.data[ k ]
-        return res
+        return ( 1, res )
 
     def update( *args, **kwargs ):
         self, other, *args = args
@@ -48,19 +48,19 @@ class CombinationDict( UserDict ):
         return CombinationDict( self.separator, self.data )
 
     def __getitem__( self, key ):
-        item = self._locate( self.key_pattern.split( key ) )
-        return item
+        count, item = self._locate( self.key_pattern.split( key ) )
+        if count > 0:
+            return item
+        raise KeyError
 
     def __setitem__( self, key, value ):
         key = self.key_pattern.split( key )
-        res = self._locate( key[ :-1 ] )
+        count, res = self._locate( key[ :-1 ] )
         if isinstance( value, Mapping ):
             value = CombinationDict( self.separator, value )
         res.data[ key[ -1 ] ] = value
         setattr( res, key[ -1 ], value )
 
     def __contains__( self, key ):
-        try:
-            return self._locate( self.key_pattern.split( key ) )
-        except IndexError:
-            return False
+        count, _ = self._locate( self.key_pattern.split( key ) )
+        return count > 0

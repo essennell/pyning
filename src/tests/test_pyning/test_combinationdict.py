@@ -81,6 +81,11 @@ def test_attribute_name_can_contain_other_chars():
     assert items.a_b == 'hello'
 
 
+def test_calling_get_method_raises_no_exceptions():
+    items = CombinationDict( '.', { } )
+    assert items.get( 'a' ) == None
+
+
 if __name__ == '__main__':
     pytest.main()
 
