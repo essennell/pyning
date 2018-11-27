@@ -143,6 +143,15 @@ def test_attribute_names_are_resolved_with_variables():
     assert config.password == 'a good strong password'
 
 
+def test_variable_subst_handles_escaped_chars():
+    items = { 'a': '${path}' }
+    repl = { 'path': 'D\\' }
+    reg = Registry()
+    config = reg.add( items ).add( repl )
+
+    assert config.resolve()[ 'a' ] == repl[ 'path' ]
+
+
 if __name__ == '__main__':
     pytest.main()
 

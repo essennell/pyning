@@ -4,6 +4,9 @@ from collections.abc import Mapping
 import re
 
 
+def _substitute_variable(match):
+    pass
+
 def _substitute_params( marker, all_keys, v ):
     match = marker.search( v )
     seen = set()
@@ -13,7 +16,7 @@ def _substitute_params( marker, all_keys, v ):
             raise Exception( key )
         seen.add( key )
         if key in all_keys:
-            v = re.sub( re.escape( sub ), str( all_keys[ key ] ), v )
+            v = re.sub( re.escape( sub ), str( all_keys[ key ] ).replace( '\\', r'\\' ), v )
             match = marker.search( v )
         else:
             match = None
