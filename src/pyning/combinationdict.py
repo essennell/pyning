@@ -3,7 +3,7 @@ from collections.abc import Mapping
 import re
 
 
-class CombinationDict( UserDict ):
+class CombinationDict( dict ):
     """ A Mapping object with convenient shorthand for references nested keys
 
         Behaves almost identically to a dictionary, with the added convenience
@@ -20,14 +20,15 @@ class CombinationDict( UserDict ):
     def __init__( self, separator, content=None, **kwargs ):
         self.separator = separator
         self.key_pattern = re.compile( rf'(?<!\\){re.escape(self.separator)}' )
-        UserDict.__init__( self, content, **kwargs )
+        if content is not None:
+            self.update( content )
 
     def _locate( self, key ):
         res = self
         for k in key:
-            if k not in res.data:
+            if not super( CombinationDict, res ).__contains__( k ):
                 return ( 0, None )
-            res = res.data[ k ]
+            res = super( CombinationDict, res ).__getitem__( k )
         return ( 1, res )
 
     def update( *args, **kwargs ):
@@ -35,8 +36,8 @@ class CombinationDict( UserDict ):
         if not isinstance( other, Mapping ):
             other = dict( other )
         for k, v in other.items():
-            if k in self.data and isinstance( v, Mapping ):
-                if isinstance( self[ k ], Mapping ):
+            if isinstance( v, Mapping ):
+                if super( CombinationDict, self ).__contains__( k ):
                     self[ k ].update( v )
                 else:
                     self[ k ] = CombinationDict( self.separator, v )
@@ -45,7 +46,7 @@ class CombinationDict( UserDict ):
         return self
 
     def copy( self ):
-        return CombinationDict( self.separator, self.data )
+        return CombinationDict( self.separator, self )
 
     def __getitem__( self, key ):
         count, item = self._locate( self.key_pattern.split( key ) )
@@ -58,7 +59,7 @@ class CombinationDict( UserDict ):
         count, res = self._locate( key[ :-1 ] )
         if isinstance( value, Mapping ):
             value = CombinationDict( self.separator, value )
-        res.data[ key[ -1 ] ] = value
+        super( CombinationDict, res ).__setitem__( key[ -1 ], value )
         setattr( res, key[ -1 ], value )
 
     def __contains__( self, key ):

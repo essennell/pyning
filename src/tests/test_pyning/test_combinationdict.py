@@ -86,6 +86,11 @@ def test_calling_get_method_raises_no_exceptions():
     assert items.get( 'a' ) == None
 
 
+def test_can_convert_to_a_real_dict_of_nested_dicts():
+    items = CombinationDict( '.', { 'a': '10', 'b': { 'c': 100 } } )
+    assert isinstance( items, dict )
+    assert isinstance( items[ 'b' ], dict )
+
 if __name__ == '__main__':
     pytest.main()
 
