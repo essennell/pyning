@@ -152,6 +152,28 @@ def test_variable_subst_handles_escaped_chars():
     assert config.resolve()[ 'a' ] == repl[ 'path' ]
 
 
+def test_registry_updated_with_new_dict_adds_those_items():
+    items = { 'a': 10 }
+    reg = Registry().add( items )
+    newitems = { 'a': 20, 'b': 100 }
+    reg.add( newitems )
+    assert reg.resolve()[ 'a' ] == newitems[ 'a' ]
+    assert reg.resolve()[ 'b' ] == newitems[ 'b' ]
+
+
+def test_using_keys_containing_key_separation_char_appear_as_keys():
+    items = { 'foo.bar': 100 }
+    reg = Registry().add( items )
+    assert reg.resolve()[ 'foo' ][ 'bar' ] == items[ 'foo.bar' ]
+
+
+def test_keys_sent_with_separation_char_are_retrieved_with_usual_selection():
+    items = { 'a': { 'foo.bar': 100 } }
+    reg = Registry().add( items )
+    assert reg.resolve()[ 'a' ][ 'foo.bar' ] == items[ 'a' ][ 'foo.bar' ]
+    assert reg.resolve().a.foo.bar == items[ 'a' ][ 'foo.bar' ]
+
+
 if __name__ == '__main__':
     pytest.main()
 

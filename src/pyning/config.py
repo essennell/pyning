@@ -56,7 +56,6 @@ class Registry:
         is a regex.
     """
     def __init__( self, separator='.', marker=r'(\$\{(.*?)\})' ):
-        self.handlers = []
         self.data = cdict( separator )
         self.marker_pattern = re.compile( marker )
 
@@ -65,7 +64,6 @@ class Registry:
         :param handler: A Mapping object with new settings
         :return: self: this is a builder method
         """
-        self.handlers.append( handler )
         self.data.update( handler )
         return self
 
@@ -73,4 +71,5 @@ class Registry:
         """ Apply variable substitutions on all registered handlers.
         :return: A copy of the CombinationDict Mapping object with all variable substitutions applied
         """
-        return _resolve( self.marker_pattern, self.data, self.data )
+        self.data = _resolve( self.marker_pattern, self.data, self.data )
+        return self.data

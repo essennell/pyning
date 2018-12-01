@@ -55,12 +55,16 @@ class CombinationDict( dict ):
         raise KeyError
 
     def __setitem__( self, key, value ):
-        key = self.key_pattern.split( key )
+        if not isinstance( key, list ):
+            key = self.key_pattern.split( key )
         count, res = self._locate( key[ :-1 ] )
-        if isinstance( value, Mapping ):
-            value = CombinationDict( self.separator, value )
-        super( CombinationDict, res ).__setitem__( key[ -1 ], value )
-        setattr( res, key[ -1 ], value )
+        if count == 0:
+            self[ key[ :-1 ] ] = CombinationDict( self.separator, { key[ -1 ]: value } )
+        else:
+            if isinstance( value, Mapping ):
+                value = CombinationDict( self.separator, value )
+            super( CombinationDict, res ).__setitem__( key[ -1 ], value )
+            setattr( res, key[ -1 ], value )
 
     def __contains__( self, key ):
         count, _ = self._locate( self.key_pattern.split( key ) )

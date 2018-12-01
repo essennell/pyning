@@ -28,9 +28,9 @@ print( config.stop_on_error )
 # True
 ```
 
-NB: keys with spaces, internal periods, or other python syntax
-elements (like '-') will cause this syntax to fail, but such
-keys can still be found with the dictionary-key lookup.
+NB: keys with spaces, or other python syntax elements (like '-') 
+will cause this syntax to fail, but such keys can still be found 
+with the dictionary-key lookup. 
 
 Multiple levels of handler are possible, with later handlers 
 override same-key settings in earlier handlers. 
